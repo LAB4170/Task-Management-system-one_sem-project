@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management System - Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f8ff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            color: #1e90ff;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1e90ff;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #187bcd;
+        }
+
+        .error {
+            color: #ff0000;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .switch-form {
+            text-align: center;
+            margin-top: 1rem;
+            color: #666;
+        }
+
+        .switch-form a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+
+        #login-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Signup Form -->
+        <form id="signup-form">
+            <h2>Sign Up</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="firstname">First Name</label>
+                <input type="text" id="firstname" required>
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last Name</label>
+                <input type="text" id="lastname" required>
+            </div>
+            <div class="form-group">
+                <label for="company">Company Name</label>
+                <input type="text" id="company" required>
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <input type="text" id="role" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-email">Company Email Address</label>
+                <input type="email" id="signup-email" required>
+            </div>
+            <div class="form-group">
+                <label for="signup-password">Password</label>
+                <input type="password" id="signup-password" required>
+                <div id="password-requirements" class="error"></div>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required>
+                <div id="password-match" class="error"></div>
+            </div>
+            <button type="submit">Sign Up</button>
+            <div class="switch-form">
+                Already have an account? <a href="#" onclick="switchToLogin()">Login</a>
+            </div>
+        </form>
+
+        <!-- Login Form -->
+        <form id="login-form">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="login-username">Username</label>
+                <input type="text" id="login-username" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" required>
+            </div>
+            <div id="login-error" class="error"></div>
+            <button type="submit">Login</button>
+            <div class="switch-form">
+                Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Form switching functions
+        function switchToLogin() {
+            document.getElementById('signup-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+
+        function switchToSignup() {
+            document.getElementById('signup-form').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+        }
+
+        // Password validation
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            let errors = [];
+            
+            if (password.length < minLength) {
+                errors.push("Password must be at least 8 characters long");
+            }
+            if (!hasUpperCase) {
+                errors.push("Include at least one uppercase letter");
+            }
+            if (!hasLowerCase) {
+                errors.push("Include at least one lowercase letter");
+            }
+            if (!hasSpecialChar) {
+                errors.push("Include at least one special character");
+            }
+            
+            return errors;
+        }
+
+        // Signup form handling
+        const signupForm = document.getElementById('signup-form');
+        const signupPassword = document.getElementById('signup-password');
+        const confirmPassword = document.getElementById('confirm-password');
+        const passwordRequirements = document.getElementById('password-requirements');
+        const passwordMatch = document.getElementById('password-match');
+
+        signupPassword.addEventListener('input', () => {
+            const errors = validatePassword(signupPassword.value);
+            passwordRequirements.innerHTML = errors.join('<br>');
+        });
+
+        confirmPassword.addEventListener('input', () => {
+            if (signupPassword.value !== confirmPassword.value) {
+                passwordMatch.textContent = "Passwords do not match";
+            } else {
+                passwordMatch.textContent = "";
+            }
+        });
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const errors = validatePassword(signupPassword.value);
+            
+            if (errors.length > 0) {
+                return;
+            }
+            
+            if (signupPassword.value !== confirmPassword.value) {
+                return;
+            }
+
+            // Store user data (in a real application, this would be sent to a server)
+            const userData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('signup-email').value,
+                password: signupPassword.value,
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Switch to login form
+            switchToLogin();
+        });
+
+        // Login form handling
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const storedData = JSON.parse(localStorage.getItem('userData') || '{}');
+            const loginUsername = document.getElementById('login-username').value;
+            const loginPassword = document.getElementById('login-password').value;
+
+            if (loginUsername === storedData.username && loginPassword === storedData.password) {
+                loginError.textContent = '';
+                alert(`Login successful! Welcome, ${storedData.firstname} ${storedData.lastname}`);
+                // Here you would typically redirect to the dashboard
+            } else {
+                loginError.textContent = 'Incorrect username or password';
+            }
+        });
+    </script>
+</body>
+</html>
